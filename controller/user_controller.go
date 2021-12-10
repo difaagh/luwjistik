@@ -67,12 +67,19 @@ func (controller *UserController) Login(c *fiber.Ctx) error {
 	var token string
 	// get token in redis before generate new token
 	redisResult := controller.Redis.Get(c.Context(), request.Email)
-	oldToken, _ := redisResult.Result()
+	oldToken, erro := redisResult.Result()
+	if erro != nil {
+		log.Println(erro)
+	}
 	if oldToken == "" {
 		newToken, err := jwt.GenerateToken(request.Email, time.Now())
 		exception.PanicIfNeeded(err)
 		token = newToken
-		controller.Redis.Set(c.Context(), request.Email, token, time.Minute*5)
+		s := controller.Redis.Set(c.Context(), request.Email, token, time.Minute*5)
+		_, errv := s.Result()
+		if errv != nil {
+			log.Println(errv)
+		}
 	} else {
 		token = oldToken
 	}

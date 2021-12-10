@@ -40,6 +40,9 @@ func main() {
 	// Setup Fiber
 	app := fiber.New(config.NewFiberConfig())
 	app.Use(recover.New())
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.Status(200).JSON("ok")
+	})
 
 	// Setup Routing
 	userController.Route(app)
@@ -66,9 +69,9 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = ":3000"
+		port = "3000"
 	}
 	// Start App
-	err := app.Listen(port)
+	err := app.Listen(":" + port)
 	exception.PanicIfNeeded(err)
 }

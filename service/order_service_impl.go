@@ -22,15 +22,14 @@ type orderServiceImpl struct {
 func (service *orderServiceImpl) Create(order model.CreateOrderRequest) error {
 	validation.ValidateCreateOrder(order)
 
-	orderId := uuid.New().String()
 	trackingOrder := make([]entity.TrackingOrder, 1)
 	trackingOrder[0].Id = uuid.New().String()
 	trackingOrder[0].CheckPoints = "Order Created"
 	trackingOrder[0].TimeStamp = time.Now()
-	trackingOrder[0].OrderId = orderId
+	trackingOrder[0].OrderId = order.Id
 
 	_order := entity.Order{
-		Id:               orderId,
+		Id:               order.Id,
 		Sender:           order.Sender,
 		SenderMobileNo:   order.SenderMobileNo,
 		ReceiverAddress:  order.ReceiverAddress,

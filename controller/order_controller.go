@@ -30,6 +30,9 @@ func (controller *OrderController) CreateOrder(c *fiber.Ctx) error {
 		request.Id = uuid.New().String()
 
 	}
+	if request.Status == 0 {
+		request.Status = 1
+	}
 
 	controller.OrderService.Create(request)
 	message := struct {

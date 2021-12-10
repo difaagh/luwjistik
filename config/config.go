@@ -19,7 +19,10 @@ func (config *configImpl) Get(key string) string {
 }
 
 func New(filenames ...string) Config {
-	err := godotenv.Load(filenames...)
-	exception.PanicIfNeeded(err)
+	production := os.Getenv("GO_ENV")
+	if production != "production" {
+		err := godotenv.Load(filenames...)
+		exception.PanicIfNeeded(err)
+	}
 	return &configImpl{}
 }

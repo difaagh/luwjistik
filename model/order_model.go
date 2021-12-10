@@ -1,24 +1,24 @@
 package model
 
 type CreateOrderRequest struct {
-	Id               string
-	Weight           uint16
-	Sender           string
-	SenderMobileNo   string
-	ReceiverAddress  string
-	ReceiverName     string
-	ReceiverMobileNo string
-	Status           int16
+	Id               string `json:"id"`
+	Weight           uint16 `json:"weight"`
+	Sender           string `json:"sender"`
+	SenderMobileNo   string `json:"senderMobileNo"`
+	ReceiverAddress  string `json:"receiverAddress"`
+	ReceiverName     string `json:"receiverName"`
+	ReceiverMobileNo string `json:"receiverMobileNo"`
+	Status           int16  `json:"status"`
 }
 
 type GetOrderDetailRequest struct {
-	Id               string
-	Weight           uint16
-	Sender           string
-	SenderMobileNo   string
-	ReceiverAddress  string
-	ReceiverName     string
-	ReceiverMobileNo string
-	Status           string
+	Id               string `json:"id"`
+	Weight           uint16 `json:"weigth"`
+	Sender           string `json:"sender"`
+	SenderMobileNo   string `json:"senderMobileNo"`
+	ReceiverAddress  string `json:"receiverAddress"`
+	ReceiverName     string `json:"receiverName"`
+	ReceiverMobileNo string `json:"receiverMobileNo"`
+	Status           string `json:"status"`
 	TrackingOrders   []GetTrackingOrderRequest
 }

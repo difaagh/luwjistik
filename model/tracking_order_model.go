@@ -3,15 +3,15 @@ package model
 import "time"
 
 type CreateTrackingOrderRequest struct {
-	Id          string
-	OrderId     string
-	CheckPoints string
-	TimeStamp   time.Time
+	Id          string    `json:"id"`
+	OrderId     string    `json:"orderId"`
+	CheckPoints string    `json:"checkpoints"`
+	TimeStamp   time.Time `json:"timeStamp"`
 }
 
 type GetTrackingOrderRequest struct {
-	Id          string
-	OrderId     string
-	CheckPoints string
-	TimeStamp   time.Time
+	Id          string    `json:"id"`
+	OrderId     string    `json:"orderId"`
+	CheckPoints string    `json:"checkpoints"`
+	TimeStamp   time.Time `json:"timeStamp"`
 }

@@ -9,6 +9,7 @@ import (
 	"luwjistik/repository"
 	"luwjistik/service"
 	"luwjistik/validation"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -63,7 +64,11 @@ func main() {
 	orderController.Route(app)
 	trackingOrderController.Route(app)
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = ":3000"
+	}
 	// Start App
-	err := app.Listen(":3000")
+	err := app.Listen(port)
 	exception.PanicIfNeeded(err)
 }

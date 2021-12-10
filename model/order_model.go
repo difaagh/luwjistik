@@ -12,13 +12,13 @@ type CreateOrderRequest struct {
 }
 
 type GetOrderDetailRequest struct {
-	Id               string `json:"id"`
-	Weight           uint16 `json:"weigth"`
-	Sender           string `json:"sender"`
-	SenderMobileNo   string `json:"senderMobileNo"`
-	ReceiverAddress  string `json:"receiverAddress"`
-	ReceiverName     string `json:"receiverName"`
-	ReceiverMobileNo string `json:"receiverMobileNo"`
-	Status           string `json:"status"`
-	TrackingOrders   []GetTrackingOrderRequest
+	Id               string                    `json:"id"`
+	Weight           uint16                    `json:"weigth"`
+	Sender           string                    `json:"sender"`
+	SenderMobileNo   string                    `json:"senderMobileNo"`
+	ReceiverAddress  string                    `json:"receiverAddress"`
+	ReceiverName     string                    `json:"receiverName"`
+	ReceiverMobileNo string                    `json:"receiverMobileNo"`
+	Status           string                    `json:"status"`
+	TrackingOrders   []GetTrackingOrderRequest `json:"trackingOrders"`
 }

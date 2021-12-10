@@ -5,6 +5,7 @@ import (
 	"luwjistik/exception"
 	"luwjistik/model"
 	"luwjistik/repository"
+	"luwjistik/validation"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,6 +20,8 @@ type orderServiceImpl struct {
 }
 
 func (service *orderServiceImpl) Create(order model.CreateOrderRequest) error {
+	validation.ValidateCreateOrder(order)
+
 	orderId := uuid.New().String()
 	trackingOrder := make([]entity.TrackingOrder, 1)
 	trackingOrder[0].Id = uuid.New().String()

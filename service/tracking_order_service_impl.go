@@ -5,6 +5,7 @@ import (
 	"luwjistik/entity"
 	"luwjistik/model"
 	"luwjistik/repository"
+	"luwjistik/validation"
 	"time"
 
 	"github.com/google/uuid"
@@ -20,6 +21,8 @@ type trackingOrderServiceImpl struct {
 }
 
 func (service *trackingOrderServiceImpl) Create(trackingOrderService model.CreateTrackingOrderRequest) error {
+	validation.ValidateCreateTrackingOrder(trackingOrderService)
+
 	exists := service.OrderRepository.GetById(trackingOrderService.OrderId)
 	if exists == (entity.Order{}) {
 		return errors.New("order id not! cannot add tracking order")

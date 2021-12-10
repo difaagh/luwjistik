@@ -8,7 +8,7 @@ type CreateOrderRequest struct {
 	ReceiverAddress  string
 	ReceiverName     string
 	ReceiverMobileNo string
-	Status           string
+	Status           int16
 }
 
 type GetOrderDetailRequest struct {

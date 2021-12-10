@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"log"
 	"luwjistik/exception"
 	"luwjistik/model"
 	"net/mail"
@@ -19,7 +18,6 @@ func ValidateCreateUser(request model.CreateUserRequest) {
 	)
 
 	if err != nil {
-		log.Println("here1")
 		panic(exception.ValidationError{
 			Message: err.Error(),
 		})
@@ -30,7 +28,6 @@ func ValidateEmail(email string) {
 
 	_, err := mail.ParseAddress(email)
 	if err != nil {
-		log.Println("here2")
 		panic(exception.ValidationError{
 			Message: "Invalid email",
 		})

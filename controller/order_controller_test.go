@@ -24,6 +24,7 @@ func TestOrderController_CreateOrder(t *testing.T) {
 		ReceiverAddress:  "Jakarta, Indonesia",
 		ReceiverName:     "Keith Heart",
 		ReceiverMobileNo: "681111",
+		Status:           1,
 	}
 
 	requestBody, _ := json.Marshal(orderRequest)

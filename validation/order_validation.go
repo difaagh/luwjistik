@@ -13,7 +13,7 @@ func ValidateCreateOrder(request model.CreateOrderRequest) {
 		validation.Field(&request.Id, validation.Required, validation.Length(1, 36)),
 		validation.Field(&request.Weight, validation.Required),
 		validation.Field(&request.Sender, validation.Required, validation.Length(1, 250)),
-		validation.Field(&request.SenderMobileNo, validation.Required, validation.Length(1, 20)),
+		validation.Field(&request.SenderMobileNo, validation.Length(0, 20)),
 		validation.Field(&request.ReceiverAddress, validation.Required, validation.Length(1, 250)),
 		validation.Field(&request.ReceiverName, validation.Required, validation.Length(1, 250)),
 		validation.Field(&request.ReceiverMobileNo, validation.Required, validation.Length(1, 20)),

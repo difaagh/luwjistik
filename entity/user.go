@@ -7,6 +7,7 @@ type User struct {
 	Name     string `gorm:"name,omitempty"`
 	Password string `gorm:"password,omitempty"`
 	Email    string `gorm:"email,omitempty"`
+	MobileNo string `gorm:"mobile_no"`
 }
 
 func (User) TableName() string {

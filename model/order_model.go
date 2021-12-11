@@ -4,6 +4,7 @@ type CreateOrderRequest struct {
 	Id               string `json:"id"`
 	Weight           uint16 `json:"weight"`
 	Sender           string `json:"sender"`
+	SenderEmail      string `json:"senderEmail"`
 	SenderMobileNo   string `json:"senderMobileNo"`
 	ReceiverAddress  string `json:"receiverAddress"`
 	ReceiverName     string `json:"receiverName"`
@@ -15,6 +16,7 @@ type GetOrderDetailRequest struct {
 	Id               string                    `json:"id"`
 	Weight           uint16                    `json:"weigth"`
 	Sender           string                    `json:"sender"`
+	SenderEmail      string                    `json:"senderEmail"`
 	SenderMobileNo   string                    `json:"senderMobileNo"`
 	ReceiverAddress  string                    `json:"receiverAddress"`
 	ReceiverName     string                    `json:"receiverName"`

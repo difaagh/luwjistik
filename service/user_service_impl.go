@@ -41,22 +41,33 @@ func (service *userServiceImpl) Create(user model.CreateUserRequest) {
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: string(hashedPassword),
+		MobileNo: user.MobileNo,
 	})
 }
 
-func (service *userServiceImpl) Login(email, password string) (bool, string) {
+func (service *userServiceImpl) Login(email, password string) (warning string, user model.GetUserRequest) {
 	if email == "" || password == "" {
-		return false, "password or email cannot be blank"
+		warning = "password or email cannot be blank"
+		return warning, user
 	}
-	user := service.UserRepository.GetByEmail(email)
-	if user == (entity.User{}) {
-		return false, "password or username invalid"
+	exists := service.UserRepository.GetByEmail(email)
+	if exists == (entity.User{}) {
+		warning = "password or username invalid"
+		return warning, user
 	}
 
-	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	err := bcrypt.CompareHashAndPassword([]byte(exists.Password), []byte(password))
 	if err != nil {
 		log.Println(err.Error())
-		return false, "password or username invalid"
+		warning = "password or username invalid"
+		return warning, user
 	}
-	return true, ""
+	user = model.GetUserRequest{
+		Id:       exists.Id,
+		Name:     exists.Name,
+		Email:    exists.Email,
+		MobileNo: exists.MobileNo,
+	}
+
+	return "", user
 }

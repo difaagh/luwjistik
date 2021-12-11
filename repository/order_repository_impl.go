@@ -26,6 +26,11 @@ func (repository *orderRepositoryImpl) GetById(orderId string) (order entity.Ord
 	return order
 }
 
+func (repository *orderRepositoryImpl) GetByEmail(email string) (order entity.Order) {
+	repository.Conn.Where("sender_email = ?", email).Find(&order)
+	return order
+}
+
 func (repository *orderRepositoryImpl) GetDetailById(orderId string) (orders entity.OrderDetail) {
 	repository.Conn.Where("id = ?", orderId).Find(&orders)
 	repository.Conn.Model(&orders).Association("TrackingOrders").Find(&orders.TrackingOrders)

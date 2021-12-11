@@ -5,6 +5,7 @@ CREATE TABLE `user_table` (
   `Id` varchar(36) NOT NULL,
   `Name` varchar(250) NOT NULL,
   `email` varchar(50) NOT NULL,
+  `mobile_no` varchar(20) DEFAULT NULL,
   `password` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -16,6 +17,7 @@ CREATE TABLE `order` (
   `id` varchar(36) NOT NULL,
   `sender` varchar(250) DEFAULT NULL,
   `sender_mobile_no` varchar(20) DEFAULT NULL,
+  `sender_email` varchar(50) DEFAULT NULL,
   `receiver_name` varchar(250) DEFAULT NULL,
   `receiver_address` varchar(250) NOT NULL,
   `weight` int(11) NOT NULL,

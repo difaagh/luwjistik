@@ -36,6 +36,7 @@ func (service *orderServiceImpl) Create(order model.CreateOrderRequest) error {
 		ReceiverName:     order.ReceiverName,
 		ReceiverMobileNo: order.ReceiverMobileNo,
 		Weight:           order.Weight,
+		SenderEmail:      order.SenderEmail,
 		Status:           1,
 	}
 
@@ -51,10 +52,16 @@ func (service *orderServiceImpl) Create(order model.CreateOrderRequest) error {
 	return nil
 }
 
-func (service *orderServiceImpl) GetDetailById(id string) (order model.GetOrderDetailRequest) {
+func (service *orderServiceImpl) GetDetailById(id, email string) (order model.GetOrderDetailRequest) {
 	if id == "" {
 		panic(exception.ValidationError{
 			Message: "Id cannot be blank",
+		})
+	}
+	isExists := service.OrderRepository.GetByEmail(email)
+	if isExists == (entity.Order{}) {
+		panic(exception.ValidationError{
+			Message: "Cannot get order detail with this user",
 		})
 	}
 	_order := service.OrderRepository.GetDetailById(id)
@@ -77,6 +84,7 @@ func (service *orderServiceImpl) GetDetailById(id string) (order model.GetOrderD
 	order.ReceiverName = _order.ReceiverName
 	order.ReceiverMobileNo = _order.ReceiverMobileNo
 	order.TrackingOrders = trackingOrders
+	order.SenderEmail = _order.SenderEmail
 
 	return order
 }

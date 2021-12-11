@@ -5,6 +5,7 @@ const Order_table = "`order`"
 type Order struct {
 	Id               string `gorm:"id,omitempty,primary_key"`
 	Sender           string `gorm:"sender,omitmepty"`
+	SenderEmail      string `gorm:"sender_email,omitempty"`
 	Weight           uint16 `gorm:"weight,omitempty"`
 	SenderMobileNo   string `gorm:"sender_mobile_no"`
 	ReceiverAddress  string `gorm:"receiver_address,omityempty"`

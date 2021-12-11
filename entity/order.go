@@ -10,7 +10,7 @@ type Order struct {
 	ReceiverAddress  string `gorm:"receiver_address,omityempty"`
 	ReceiverName     string `gorm:"receiver_name"`
 	ReceiverMobileNo string `gorm:"receiver_mobile_no"`
-	Status           string `gorm:"status,omitempty"`
+	Status           int16  `gorm:"status,omitempty"`
 }
 
 type OrderDetail struct {

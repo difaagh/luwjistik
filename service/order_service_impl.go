@@ -36,7 +36,7 @@ func (service *orderServiceImpl) Create(order model.CreateOrderRequest) error {
 		ReceiverName:     order.ReceiverName,
 		ReceiverMobileNo: order.ReceiverMobileNo,
 		Weight:           order.Weight,
-		Status:           "1",
+		Status:           1,
 	}
 
 	data := entity.OrderDetail{

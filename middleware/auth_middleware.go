@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"luwjistik/util"
+	"strings"
 )
 
 type CheckJwtReturn struct {
@@ -13,15 +14,25 @@ type CheckJwtReturn struct {
 	MobileNo   string
 }
 
-func CheckJwt(token string, validation *util.JwtWrapper) *CheckJwtReturn {
+func CheckJwt(_token string, validation *util.JwtWrapper) *CheckJwtReturn {
 	var data CheckJwtReturn
-	if token == "" {
+	if _token == "" {
 		data = CheckJwtReturn{
-			Err:        errors.New("token not provided !"),
+			Err:        errors.New("token not provided"),
 			StatusCode: 403,
 		}
 		return &data
 	}
+
+	var token string
+	splittedToken := strings.Split(_token, "Bearer")
+	if len(splittedToken) > 1 {
+		_t := strings.Split(splittedToken[1], " ")
+		token = _t[1]
+	} else {
+		token = splittedToken[0]
+	}
+
 	claims, err := validation.ValidateToken(token)
 	if err != nil {
 		data = CheckJwtReturn{

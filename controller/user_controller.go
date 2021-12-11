@@ -5,7 +5,7 @@ import (
 	"luwjistik/exception"
 	"luwjistik/model"
 	"luwjistik/service"
-	"luwjistik/validation"
+	"luwjistik/util"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -51,16 +51,17 @@ func (controller *UserController) Login(c *fiber.Ctx) error {
 
 	exception.PanicIfNeeded(err)
 
-	if err, responseStr := controller.UserService.Login(request.Email, request.Password); err != true {
-		log.Println(responseStr)
+	warning, user := controller.UserService.Login(request.Email, request.Password)
+	if warning != "" {
+		log.Println(warning)
 		return c.Status(400).JSON(model.WebResponse{
 			Code:   400,
 			Status: "BAD_REQUEST",
-			Data:   responseStr,
+			Data:   warning,
 		})
 	}
 
-	jwt := validation.JwtWrapper{
+	jwt := util.JwtWrapper{
 		SecretKey: "luwjistik secret",
 		Issuer:    "app",
 	}
@@ -72,7 +73,7 @@ func (controller *UserController) Login(c *fiber.Ctx) error {
 		log.Println(erro)
 	}
 	if oldToken == "" {
-		newToken, err := jwt.GenerateToken(request.Email, time.Now())
+		newToken, err := jwt.GenerateToken(user.Name, user.Email, user.MobileNo, time.Now())
 		exception.PanicIfNeeded(err)
 		token = newToken
 		s := controller.Redis.Set(c.Context(), request.Email, token, time.Minute*5)

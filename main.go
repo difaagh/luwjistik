@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"luwjistik/config"
 	"luwjistik/controller"
 	"luwjistik/exception"
@@ -8,7 +9,7 @@ import (
 	"luwjistik/model"
 	"luwjistik/repository"
 	"luwjistik/service"
-	"luwjistik/validation"
+	"luwjistik/util"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
@@ -48,20 +49,27 @@ func main() {
 	userController.Route(app)
 
 	app.Use(func(c *fiber.Ctx) error {
-
 		token := c.Get("Authorization")
-
-		err, statusCode := middleware.CheckJwt(token, &validation.JwtWrapper{
+		claims := middleware.CheckJwt(token, &util.JwtWrapper{
 			SecretKey: "luwjistik secret",
 			Issuer:    "app",
 		})
-		if err != nil {
-			return c.Status(statusCode).JSON(model.WebResponse{
-				Code:   statusCode,
+
+		if claims.Err != nil {
+			return c.Status(claims.StatusCode).JSON(model.WebResponse{
+				Code:   claims.StatusCode,
 				Status: "",
-				Data:   err.Error(),
+				Data:   claims.Err.Error(),
 			})
 		}
+		dataUser := util.ContextValues{
+			util.UserEmailValue:    claims.Email,
+			util.UserNameValue:     claims.Name,
+			util.UserMobileNoValue: claims.MobileNo,
+		}
+
+		ctx := context.WithValue(c.Context(), util.UserContextValue, dataUser)
+		c.SetUserContext(ctx)
 		return c.Next()
 	})
 	orderController.Route(app)

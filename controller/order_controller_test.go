@@ -12,35 +12,63 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func TestOrderController_CreateOrder(t *testing.T) {
+	userRepository.DeleteAll()
 	orderRepository.DeleteAll()
+
+	password := "dark secret"
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	user := entity.User{
+		Id:       uuid.New().String(),
+		Name:     "John Doe",
+		Email:    "john_doe@email.com",
+		Password: string(hashedPassword),
+	}
+	userRepository.Create(user)
 
 	orderRequest := model.CreateOrderRequest{
 		Weight:           5,
-		Sender:           "John Doe",
-		SenderMobileNo:   "6281222",
 		ReceiverAddress:  "Jakarta, Indonesia",
 		ReceiverName:     "Keith Heart",
 		ReceiverMobileNo: "681111",
 		Status:           1,
 	}
 
+	loginRequest := model.LoginUserRequest{
+		Password: password,
+		Email:    user.Email,
+	}
+
+	requestLoginBody, _ := json.Marshal(loginRequest)
+	requestLogin := httptest.NewRequest("POST", "/api/login", bytes.NewBuffer(requestLoginBody))
+	requestLogin.Header.Set("Content-Type", "application/json")
+	requestLogin.Header.Set("Accept", "application/json")
+
+	responseLogin, _ := app.Test(requestLogin)
+
+	responseBodyLogin, _ := ioutil.ReadAll(responseLogin.Body)
+
+	webResponseLogin := model.WebResponse{}
+	json.Unmarshal(responseBodyLogin, &webResponseLogin)
+
 	requestBody, _ := json.Marshal(orderRequest)
 
 	request := httptest.NewRequest("POST", "/api/order", bytes.NewBuffer(requestBody))
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "application/json")
+	request.Header.Set("Authorization", webResponseLogin.Data.(string))
 
 	response, _ := app.Test(request)
 	assert.Equal(t, 200, response.StatusCode)
-	t.Log(response.Status)
 
 	responseBody, _ := ioutil.ReadAll(response.Body)
 
 	webResponse := model.WebResponse{}
 	json.Unmarshal(responseBody, &webResponse)
+	t.Log(webResponse)
 
 	assert.Equal(t, 200, webResponse.Code)
 	assert.Equal(t, "OK", webResponse.Status)
@@ -56,15 +84,43 @@ func TestOrderController_CreateOrder(t *testing.T) {
 }
 
 func TestOrderController_GetDetailOrder(t *testing.T) {
+	userRepository.DeleteAll()
 	orderRepository.DeleteAll()
 	trackingOrderRepository.DeleteAll()
+
+	password := "dark secret"
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	user := entity.User{
+		Id:       uuid.New().String(),
+		Name:     "John Doe",
+		Email:    "john_doe@email.com",
+		Password: string(hashedPassword),
+	}
+	userRepository.Create(user)
+
+	loginRequest := model.LoginUserRequest{
+		Password: password,
+		Email:    user.Email,
+	}
+
+	requestLoginBody, _ := json.Marshal(loginRequest)
+	requestLogin := httptest.NewRequest("POST", "/api/login", bytes.NewBuffer(requestLoginBody))
+	requestLogin.Header.Set("Content-Type", "application/json")
+	requestLogin.Header.Set("Accept", "application/json")
+
+	responseLogin, _ := app.Test(requestLogin)
+
+	responseBodyLogin, _ := ioutil.ReadAll(responseLogin.Body)
+
+	webResponseLogin := model.WebResponse{}
+	json.Unmarshal(responseBodyLogin, &webResponseLogin)
 
 	orderId := uuid.New().String()
 	order := entity.Order{
 		Id:               orderId,
 		Weight:           5,
-		Sender:           "John Doe",
-		SenderMobileNo:   "6281222",
+		Sender:           user.Name,
+		SenderEmail:      user.Email,
 		ReceiverAddress:  "Jakarta, Indonesia",
 		ReceiverName:     "Keith Heart",
 		ReceiverMobileNo: "681111",
@@ -80,6 +136,7 @@ func TestOrderController_GetDetailOrder(t *testing.T) {
 
 	request := httptest.NewRequest("GET", "/api/order/"+orderId, nil)
 	request.Header.Set("Accept", "application/json")
+	request.Header.Set("Authorization", webResponseLogin.Data.(string))
 
 	response, _ := app.Test(request)
 	assert.Equal(t, 200, response.StatusCode)
@@ -87,6 +144,7 @@ func TestOrderController_GetDetailOrder(t *testing.T) {
 	responseBody, _ := ioutil.ReadAll(response.Body)
 
 	webResponse := model.WebResponse{}
+	t.Log(webResponseLogin.Data)
 	json.Unmarshal(responseBody, &webResponse)
 	assert.Equal(t, 200, webResponse.Code)
 	assert.Equal(t, "OK", webResponse.Status)

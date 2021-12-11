@@ -39,10 +39,12 @@ func TestUserController_Login(t *testing.T) {
 
 	response, _ := app.Test(request)
 	assert.Equal(t, 200, response.StatusCode)
+	t.Log(response.StatusCode)
 
 	responseBody, _ := ioutil.ReadAll(response.Body)
 
 	webResponse := model.WebResponse{}
+	t.Log(webResponse.Data)
 	json.Unmarshal(responseBody, &webResponse)
 	assert.Equal(t, 200, webResponse.Code)
 	assert.Equal(t, "OK", webResponse.Status)

@@ -2,16 +2,38 @@ package middleware
 
 import (
 	"errors"
-	"luwjistik/validation"
+	"luwjistik/util"
 )
 
-func CheckJwt(token string, validation *validation.JwtWrapper) (error, int) {
+type CheckJwtReturn struct {
+	Err        error
+	StatusCode int
+	Email      string
+	Name       string
+	MobileNo   string
+}
+
+func CheckJwt(token string, validation *util.JwtWrapper) *CheckJwtReturn {
+	var data CheckJwtReturn
 	if token == "" {
-		return errors.New("Forbidden"), 403
+		data = CheckJwtReturn{
+			Err:        errors.New("token not provided !"),
+			StatusCode: 403,
+		}
+		return &data
 	}
-	_, err := validation.ValidateToken(token)
+	claims, err := validation.ValidateToken(token)
 	if err != nil {
-		return err, 400
+		data = CheckJwtReturn{
+			Err:        err,
+			StatusCode: 400,
+		}
+		return &data
 	}
-	return nil, 200
+	data = CheckJwtReturn{
+		Email:    claims.Email,
+		Name:     claims.Name,
+		MobileNo: claims.MobileNo,
+	}
+	return &data
 }

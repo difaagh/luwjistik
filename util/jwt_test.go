@@ -1,4 +1,4 @@
-package validation
+package util
 
 import (
 	"testing"
@@ -8,6 +8,8 @@ import (
 )
 
 const email = "test@email.com"
+const name = "John Doe"
+const mobileNo = "0000"
 
 var signedToken string
 
@@ -17,7 +19,7 @@ func TestJwt_GenerateJwt(t *testing.T) {
 		Issuer:    "test",
 	}
 	var err error
-	signedToken, err = jwt.GenerateToken(email, time.Now())
+	signedToken, err = jwt.GenerateToken(name, email, mobileNo, time.Now())
 	assert.NoError(t, err)
 	assert.NotEqual(t, "", signedToken)
 }
@@ -30,4 +32,6 @@ func TestJwt_ValidateJwt(t *testing.T) {
 	claims, err := jwt.ValidateToken(signedToken)
 	assert.NoError(t, err)
 	assert.Equal(t, email, claims.Email)
+	assert.Equal(t, name, claims.Name)
+	assert.Equal(t, mobileNo, claims.MobileNo)
 }

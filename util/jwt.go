@@ -1,4 +1,4 @@
-package validation
+package util
 
 import (
 	"errors"
@@ -14,13 +14,17 @@ type JwtWrapper struct {
 }
 
 type JwtClaim struct {
-	Email string
+	Email    string
+	Name     string
+	MobileNo string
 	jwt.StandardClaims
 }
 
-func (j *JwtWrapper) GenerateToken(email string, now time.Time) (signedToken string, err error) {
+func (j *JwtWrapper) GenerateToken(name, email, mobileNo string, now time.Time) (signedToken string, err error) {
 	claims := &JwtClaim{
-		Email: email,
+		Email:    email,
+		Name:     name,
+		MobileNo: mobileNo,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: now.Local().Add(time.Minute * 5).Unix(),
 			Issuer:    j.Issuer,
@@ -46,15 +50,15 @@ func (j *JwtWrapper) ValidateToken(signedToken string) (claims *JwtClaim, err er
 			return []byte(j.SecretKey), nil
 		},
 	)
-	log.Println(err, "error 1")
 
 	if err != nil {
+		log.Println(err)
 		return
 	}
 
 	claims, ok := token.Claims.(*JwtClaim)
 	if !ok {
-		err = errors.New("Couldn't parse claims")
+		err = errors.New("couldn't parse claims")
 		log.Println(err, "error 2")
 		return
 	}

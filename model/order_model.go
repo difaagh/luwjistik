@@ -19,6 +19,6 @@ type GetOrderDetailRequest struct {
 	ReceiverAddress  string                    `json:"receiverAddress"`
 	ReceiverName     string                    `json:"receiverName"`
 	ReceiverMobileNo string                    `json:"receiverMobileNo"`
-	Status           string                    `json:"status"`
+	Status           int16                     `json:"status"`
 	TrackingOrders   []GetTrackingOrderRequest `json:"trackingOrders"`
 }
